@@ -1,0 +1,12 @@
+<div class="container" style="text-align:center;">
+
+	<button data-ng-click="playSlot()" type="button" class="btn btn-primary btn-circle btn-xl">Play <p style="font-size:12px">30 credits<p></button>
+	<br />
+	<br />
+	<div ng-if="credits < 30"><h1>Not enough credits<h1></div>
+	<div ng-if="!slotOutput"><h2>Press Play!</h2></div>
+	<div> <h1>Credits: </h1><h1 count-up id="creditCount" ng-model="credits"></h1></br>
+	<div ng-bind-html="slotOutput"></div>
+
+</div>
+
