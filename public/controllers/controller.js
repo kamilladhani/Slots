@@ -1,4 +1,4 @@
-var slotsApp = angular.module("slotsApp", ['ngRoute', 'ngSanitize', 'ngCountup']);
+var slotsApp = angular.module("slotsApp", ['firebase', 'ngRoute', 'ngSanitize', 'ngCountup']);
 
   // Initialize Firebase
   var config = {
@@ -29,11 +29,37 @@ slotsApp.config(function ($routeProvider, $locationProvider) {
 });
 
 
-slotsApp.controller('slotsController', function ($scope, $timeout, $location, $sce) {
+slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, $firebaseAuth) {
+
+	// var ref = new Firebase("https://slots-2bfa4.firebaseio.com/");
+	// // create an instance of the authentication service
+	// var auth = $firebaseAuth(ref);
+	// // login with Facebook
+	// auth.$authWithOAuthPopup("facebook").then(function(authData) {
+	// 	console.log("Logged in as:", authData.uid);
+	// }).catch(function(error) {
+	// 	console.log("Authentication failed:", error);
+	// });
+
+	// // download the data into a local object
+	// var syncObject = $firebaseObject(ref);
+
+	// // synchronize the object with a three-way data binding
+	// // click on `index.html` above to see it used in the DOM!
+ //  	syncObject.$bindTo($scope, "credits");
 
 	$scope.credits = 1000;
 
 	var icons = ["BAR", "2BAR", "3BAR", "7", "77", "777", "BELL", "CHERRY", "QUICKHIT"] //ORDER MATTERS FOR CODE
+	var dict = { "BAR":"greenbar", 
+				 "2BAR":"redbar", 
+				 "3BAR":"goldbar", 
+				 "7":"redseven", 
+				 "77":"goldenseven", 
+				 "777":"diamond", 
+				 "BELL":"bell", 
+				 "CHERRY":"cherry", 
+				 "QUICKHIT":"goldclover" };
 
 	// Note line positions are as follows:
 	//
@@ -66,7 +92,7 @@ slotsApp.controller('slotsController', function ($scope, $timeout, $location, $s
 			slotOutput += "<td style='border:1px solid black;'>";
 			var rand = Math.floor(Math.random() * icons.length);
 			spin.push(icons[rand]);
-			slotOutput += icons[rand] + " ";
+			slotOutput += "<img src='img/slotMachineIcons/" + dict[icons[rand]] + ".png' style='width:60px;height:60px;'>";
 			slotOutput += "</td>";
 			if ((i%5)==4) {
 				slotOutput += "</tr><tr>";
