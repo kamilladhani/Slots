@@ -1,4 +1,4 @@
-var slotsApp = angular.module("slotsApp", ['firebase', 'ngRoute', 'ngSanitize', 'ngCountup']);
+var slotsApp = angular.module("slotsApp", ['firebase', 'ngRoute', 'ngSanitize', 'ngCountup', 'ngAnimate']);
 
   // Initialize Firebase
   var config = {
@@ -51,6 +51,8 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 	$scope.credits = 1000;
 
 	var icons = ["BAR", "2BAR", "3BAR", "7", "77", "777", "BELL", "CHERRY", "QUICKHIT"] //ORDER MATTERS FOR CODE
+	
+	// Mapping of names of icons to names of the pictures (in png format)
 	var dict = { "BAR":"greenbar", 
 				 "2BAR":"redbar", 
 				 "3BAR":"goldbar", 
@@ -59,7 +61,7 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 				 "777":"diamond", 
 				 "BELL":"bell", 
 				 "CHERRY":"cherry", 
-				 "QUICKHIT":"goldclover" };
+				 "QUICKHIT":"goldclover" }; // Names of the pictures (in png format)
 
 	// Note line positions are as follows:
 	//
@@ -68,11 +70,18 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 	//  10 11 12 13 14
 	//
 	//  
-
-	var lines = [[0,1,2,3,4],    [0,1,7,3,4],     [0,1,12,3,4], 
-				 [0,6,2,8,4],    [0,6,7,8,4],     [0,6,12,8,4],
-				 [0,11,2,13,4],  [0,11,7,13,4],   [0,11,12,13,4],
-				  ]; // Still need ones that start with 5 and 10
+ 
+	var lines = [[0,1,2,3,4],      [0,1,7,3,4],       [0,1,12,3,4], // Starts with posn 0
+				 [0,6,2,8,4],      [0,6,7,8,4],       [0,6,12,8,4],   
+				 [0,1,7,13,14],    [0,6,7,8,14],      [0,11,7,3,14],  
+				 [0,11,2,13,4],    [0,11,7,13,4],     [0,11,12,13,4], 
+				 [10,1,2,3,14],    [10,1,7,3,14],     [10,1,12,3,14], // Starts with posn 10
+				 [10,1,7,13,4],    [10,6,7,8,4],      [10,11,7,3,4],
+				 [10,6,2,8,14],    [10,6,7,8,14],     [10,6,12,8,14],
+				 [10,11,2,13,14],  [10,11,7,13,14],   [10,11,12,13,14],  
+				 [5,1,2,3,9],   [5,1,7,3,9],   [5,1,12,3,9],   [5,1,7,13,9], // Starts with posn 5     
+				 [5,6,2,8,9],   [5,6,12,8,9], 
+				 [5,11,2,13,9], [5,11,7,13,9], [5,11,12,13,9], [5,11,7,3,9]]; 
 
 	$scope.playSlot = function() {
 
@@ -83,22 +92,20 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 		// Take away 30 credits per play
 		$scope.credits -= 30;
 			
-		var slotOutput = "<table style='border:1px solid black; text-align:center; margin: 0px auto;'>"
+		//remove previous images
+		$('td').addClass('hidden')
+		$('.inserted').remove();
+
 		var spin = [];
+
 		for (var i=0; i<15; i++) {
-			if ((i%5)==0) {
-				slotOutput += "<tr>";
-			}
-			slotOutput += "<td style='border:1px solid black;'>";
 			var rand = Math.floor(Math.random() * icons.length);
 			spin.push(icons[rand]);
-			slotOutput += "<img src='img/slotMachineIcons/" + dict[icons[rand]] + ".png' style='width:60px;height:60px;'>";
-			slotOutput += "</td>";
-			if ((i%5)==4) {
-				slotOutput += "</tr><tr>";
-			}
+			$('#'+i.toString()).append("<img src='img/slotMachineIcons/" + dict[icons[rand]] + ".png' id='" + i.toString() + "child" + "' class='inserted' style='width:60px;height:60px;'>");
+			// $('#'+i.toString()).delay(i*1000).removeClass('hidden');
+			showing(i);
 		}
-		slotOutput += "</table>"
+
 
 		console.log(icons.slice(0, icons.length-1));
 
@@ -185,14 +192,27 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 		else if (quickhits>=9) { score += 100000; }
 
 		// Add score to credits
-		$scope.credits += score;
+		$scope.addToCredits(score);
 
-		slotOutput += "</br></br/><h1>You won " + score + " credits!</h1>";
+	};
 
-		$scope.slotOutput = $sce.trustAsHtml(slotOutput);
+	function showing (i) {
+		var del = (i%5)*1000 + 1000;
+		setTimeout(function() { $('#'+i.toString()).removeClass("hidden"); console.log(i); }, del);
+	}
 
+	$scope.addToCredits = function (score) {
+		setTimeout(function() { 
+			$('#score').html(score);
+			$scope.credits += score;
+			var numAnim = new CountUp("counter", $scope.credits, $scope.credits+score);
+			numAnim.start();
+		}, 6000);
 	};
 
 	console.log("controller called");
 
 }); 
+
+
+

@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "slots casino game",
   "main": "server.js",
-  "dependencies": {},
+  "dependencies": {
+    "angular-animate": "^1.6.2"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
