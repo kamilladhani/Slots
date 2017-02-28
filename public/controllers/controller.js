@@ -90,17 +90,17 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 		if ($scope.credits < 30) {
 			return "Not enough credits";
 		}
-
+			
 		// Take away 30 credits per play
 		$scope.credits -= 30;
-			
-		//remove previous images and message
+		
+		// Remove previous images and message
 		$('#instructions').remove();
 		$('td').addClass('hidden');
 		$('.inserted').remove();
 		$('#score').html("");
-		$('#counter').html($scope.credits);
-
+		var demo = new CountUp("counter", $scope.credits+30, $scope.credits, 0, 2.5);
+		demo.start();
 
 		var spin = [];
 
@@ -111,7 +111,6 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 			// $('#'+i.toString()).delay(i*1000).removeClass('hidden');
 			showing(i);
 		}
-
 
 		console.log(icons.slice(0, icons.length-1));
 
@@ -211,7 +210,7 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 		setTimeout(function() { 
 			$('#score').html("You won " + score + " credits!");
 			$scope.credits += score;
-			var numAnim = new CountUp("counter", $scope.credits-score, $scope.credits);
+			var numAnim = new CountUp("counter", $scope.credits-score, $scope.credits, 0, 2.5, {separator:""});
 			numAnim.start();
 		}, 6000);
 	};
