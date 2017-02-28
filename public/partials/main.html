@@ -1,5 +1,12 @@
 <div class="container" style="text-align:center;">
 
+	<div id="instructions" style="display: inline-block; text-align:left;">
+		<h2>How to play:</h2>
+		<h4> - Each play costs 30 credits</h4>
+		<h4> - 3 or more identical bars, sevens, diamonds, cherries, or bells in a line rewards credits</h4>
+		<h4> - 3 or more scattered clovers rewards credits</h4>
+	</div>
+
 	<br />
 	<br />
 	<div ng-if="credits < 30"><h1>Not enough credits<h1></div>
@@ -38,7 +45,9 @@
 
 	<br />
 
-	<div><h1>You won: </h1> <h1 id="score"></h1> <h1>credits!</h1></div>
+
+	<h1 id="score"></h1>
+	<!-- <div><h1>You won: </h1> <h1 id="score"></h1> <h1>credits!</h1></div> -->
 
 </div>
 

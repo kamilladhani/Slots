@@ -50,6 +50,8 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 
 	$scope.credits = 1000;
 
+	$('td').addClass('hidden');
+
 	var icons = ["BAR", "2BAR", "3BAR", "7", "77", "777", "BELL", "CHERRY", "QUICKHIT"] //ORDER MATTERS FOR CODE
 	
 	// Mapping of names of icons to names of the pictures (in png format)
@@ -92,9 +94,13 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 		// Take away 30 credits per play
 		$scope.credits -= 30;
 			
-		//remove previous images
-		$('td').addClass('hidden')
+		//remove previous images and message
+		$('#instructions').remove();
+		$('td').addClass('hidden');
 		$('.inserted').remove();
+		$('#score').html("");
+		$('#counter').html($scope.credits);
+
 
 		var spin = [];
 
@@ -203,9 +209,9 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 
 	$scope.addToCredits = function (score) {
 		setTimeout(function() { 
-			$('#score').html(score);
+			$('#score').html("You won " + score + " credits!");
 			$scope.credits += score;
-			var numAnim = new CountUp("counter", $scope.credits, $scope.credits+score);
+			var numAnim = new CountUp("counter", $scope.credits-score, $scope.credits);
 			numAnim.start();
 		}, 6000);
 	};
