@@ -1,14 +1,19 @@
-var slotsApp = angular.module("slotsApp", ['firebase', 'ngRoute', 'ngSanitize', 'ngCountup', 'ngAnimate']);
+var slotsApp = angular.module("slotsApp", [//'firebase', 
+										   'ngRoute', 
+										   'ngSanitize', 
+										   //'ngCountup', 
+										   //'ngAnimate'
+										   ]);
 
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyBI8hogoKGbyjIq-F2vanQllIDJxoHymwU",
-    authDomain: "slots-2bfa4.firebaseapp.com",
-    databaseURL: "https://slots-2bfa4.firebaseio.com",
-    storageBucket: "slots-2bfa4.appspot.com",
-    messagingSenderId: "981222622235"
-  };
-  firebase.initializeApp(config);
+  // // Initialize Firebase
+  // var config = {
+  //   apiKey: "AIzaSyBI8hogoKGbyjIq-F2vanQllIDJxoHymwU",
+  //   authDomain: "slots-2bfa4.firebaseapp.com",
+  //   databaseURL: "https://slots-2bfa4.firebaseio.com",
+  //   storageBucket: "slots-2bfa4.appspot.com",
+  //   messagingSenderId: "981222622235"
+  // };
+  // firebase.initializeApp(config);
 
 slotsApp.config(function ($routeProvider, $locationProvider) {
 	
@@ -20,16 +25,11 @@ slotsApp.config(function ($routeProvider, $locationProvider) {
 				controller: 'slotsController',
 				templateUrl: 'partials/main.html'
 			})
-		// .when('/note/:id',
-		// 	{
-		// 		controller: 'noteDetails',
-		// 		templateUrl: 'partials/details.html'
-		// 	})
 		.otherwise({ redirectTo: '/' });
 });
 
 
-slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, $firebaseAuth) {
+slotsApp.controller('slotsController', function ($scope, $sce) { //Inject $firebaseObject, $firebaseAuth for firebase
 
 	// var ref = new Firebase("https://slots-2bfa4.firebaseio.com/");
 	// // create an instance of the authentication service
@@ -52,7 +52,8 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 
 	$('td').addClass('hidden');
 
-	var icons = ["BAR", "2BAR", "3BAR", "7", "77", "777", "BELL", "CHERRY", "QUICKHIT"] //ORDER MATTERS FOR CODE
+	// NOTE: ORDER MATTERS 
+	var icons = ["BAR", "2BAR", "3BAR", "7", "77", "777", "BELL", "CHERRY", "QUICKHIT"] 
 	
 	// Mapping of names of icons to names of the pictures (in png format)
 	var dict = { "BAR":"greenbar", 
@@ -94,13 +95,13 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 		// Take away 30 credits per play
 		$scope.credits -= 30;
 		
-		// Remove previous images and message
+		// Remove previous images and messages
 		$('#instructions').remove();
 		$('td').addClass('hidden');
 		$('.inserted').remove();
 		$('#score').html("");
-		var demo = new CountUp("counter", $scope.credits+30, $scope.credits, 0, 2.5);
-		demo.start();
+		var take30 = new CountUp("counter", $scope.credits+30, $scope.credits, 0, 2.5, {separator:""});
+		take30.start();
 
 		var spin = [];
 
@@ -108,7 +109,6 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 			var rand = Math.floor(Math.random() * icons.length);
 			spin.push(icons[rand]);
 			$('#'+i.toString()).append("<img src='img/slotMachineIcons/" + dict[icons[rand]] + ".png' id='" + i.toString() + "child" + "' class='inserted' style='width:60px;height:60px;'>");
-			// $('#'+i.toString()).delay(i*1000).removeClass('hidden');
 			showing(i);
 		}
 
@@ -208,7 +208,12 @@ slotsApp.controller('slotsController', function ($scope, $sce, $firebaseObject, 
 
 	$scope.addToCredits = function (score) {
 		setTimeout(function() { 
-			$('#score').html("You won " + score + " credits!");
+			if (score==0) {
+				$('#score').html("Sorry, no credits won. Try again!");
+			} else {
+				$('#score').html("You won " + score + " credits!");
+			}
+			
 			$scope.credits += score;
 			var numAnim = new CountUp("counter", $scope.credits-score, $scope.credits, 0, 2.5, {separator:""});
 			numAnim.start();
