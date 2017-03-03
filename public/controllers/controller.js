@@ -202,7 +202,7 @@ slotsApp.controller('slotsController', function ($scope, $sce) { //Inject $fireb
 	};
 
 	function showing (i) {
-		var del = (i%5)*1000 + 1000;
+		var del = (i%5)*600 + 700;
 		setTimeout(function() { $('#'+i.toString()).removeClass("hidden"); console.log(i); }, del);
 	}
 
@@ -217,7 +217,7 @@ slotsApp.controller('slotsController', function ($scope, $sce) { //Inject $fireb
 			$scope.credits += score;
 			var numAnim = new CountUp("counter", $scope.credits-score, $scope.credits, 0, 2.5, {separator:""});
 			numAnim.start();
-		}, 6000);
+		}, 3700);
 	};
 
 	console.log("controller called");
